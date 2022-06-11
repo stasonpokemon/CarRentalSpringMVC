@@ -3,6 +3,7 @@ package com.trebnikau.controller;
 import com.trebnikau.entity.Role;
 import com.trebnikau.entity.User;
 import com.trebnikau.repo.UserRepo;
+import com.trebnikau.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ public class UserController {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private UserService userService;
+
 
     @GetMapping
     public String userList(Model model) {
@@ -39,23 +43,8 @@ public class UserController {
     @PostMapping()
     public String saveUser(@RequestParam("userId") User user,
                            @RequestParam("userName") String userName,
-                           @RequestParam Map<String, String> form){
-        user.setUsername(userName);
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-        // для начала нужно очистить все роли у user
-        user.getRoles().clear();
-        for (String key : form.keySet()) {
-            if (roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
-        // если в чекбоксе небыло выбранно ни одной роли, тогда автоматически присваетвается роль user
-        if (user.getRoles().size() == 0){
-            user.getRoles().add(Role.USER);
-        }
-        userRepo.save(user);
+                           @RequestParam Map<String, String> form) {
+        userService.saveUserAfterEditing(user, userName, form);
         return "redirect:/user";
     }
 
