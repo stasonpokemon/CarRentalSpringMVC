@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
-@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
     @Autowired
@@ -26,13 +25,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public String userList(Model model) {
-        model.addAttribute("users", userRepo.findAll());
+    public String userList(@RequestParam(required = false, name = "filter", defaultValue = "") String filter,
+                           Model model) {
+        Iterable<User> users;
+        if (filter != null && !filter.isEmpty()) {
+            users = userRepo.findAllByUsername(filter);
+        } else {
+            users = userRepo.findAll();
+        }
+        model.addAttribute("users", users);
         return "user-list";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
     public String userEdit(@PathVariable("id") User user, Model model) {
         model.addAttribute("user", user);
@@ -40,6 +47,7 @@ public class UserController {
         return "user-edit";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping()
     public String saveUser(@RequestParam("userId") User user,
                            @RequestParam("userName") String userName,
@@ -47,5 +55,6 @@ public class UserController {
         userService.saveUserAfterEditing(user, userName, form);
         return "redirect:/user";
     }
+
 
 }

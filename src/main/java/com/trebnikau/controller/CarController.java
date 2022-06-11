@@ -16,8 +16,16 @@ public class CarController {
     private CarRepo carRepo;
 
     @GetMapping()
-    public String showAllCars(Model model) {
-        model.addAttribute("cars", carRepo.findAll());
+    public String showAllCars(@RequestParam(required = false, name = "filter", defaultValue = "") String filter,
+                              Model model) {
+        Iterable<Car> cars;
+        if (filter != null && !filter.isEmpty()){
+            cars = carRepo.findCarsByProducer(filter);
+        }else {
+           cars = carRepo.findAll();
+        }
+
+        model.addAttribute("cars", cars);
         return "car-list";
     }
 
