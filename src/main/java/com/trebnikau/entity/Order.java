@@ -23,7 +23,7 @@ public class Order {
     private User user;
     private double price;
     @Column(name = "order_status")
-    private String orderStatus;
+    private OrderStatus orderStatus;
     @Column(name = "order_date")
     private Timestamp orderDate;
     @Column(name = "rental_period")

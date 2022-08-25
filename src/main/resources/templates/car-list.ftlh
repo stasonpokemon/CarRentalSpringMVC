@@ -17,45 +17,48 @@
                     <option value="${car.producer}">
                         </#list>
                 </datalist>
-                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                <button type="submit" class="btn btn-primary mt-3 mb-3">Search</button>
             </form>
         </div>
     </div>
 
     <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle mb-3" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
             Sort
         </button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="/cars">All cars</a>
-            <a class="dropdown-item" href="/cars?sort=free">Only free cars</a>
-            <a class="dropdown-item" href="/cars?sort=price">By price</a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/cars">All cars</a></li>
+            <li><a class="dropdown-item" href="/cars?sort=free">Only free cars</a></li>
+            <li><a class="dropdown-item" href="/cars?sort=price">By price</a></li>
             <#--            <a class="dropdown-item" href="#">By name</a>-->
-        </div>
+        </ul>
     </div>
 
-    <div class="card-columns">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         <#list cars as car>
             <div class="col">
-                <div class="card my-3">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">${car.producer} ${car.model}</h5>
                         <p class="card-text"><#if car.employmentStatus == true>Free<#else>Busy</#if></p>
                         <p class="card-text"><small class="text-muted">Price per day: ${car.pricePerDay}$</small></p>
-                        <div class="col-12 m-2 p-2">
+                        <div class="hstack gap-3">
                             <#if car.employmentStatus == true>
-                                <a href="/orders/${currentUserId}/${car.id}" class="btn btn-primary">Order</a>
+                                <button type="button" class="btn btn-primary mb-2"
+                                        onclick="window.location='/orders/${currentUserId}/${car.id}'">Order
+                                </button>
                             </#if>
                             <#if isAdmin>
-                            <a href="/cars/${car.id}" class="btn btn-primary">Edit</a>
+                                <button type="button" class="btn btn-primary mb-2"
+                                        onclick="window.location='/cars/${car.id}'">Edit
+                                </button>
+                                <form method="post" action="/cars/delete/${car.id}">
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-primary mb-2">Delete</button>
+                                </form>
+                            </#if>
                         </div>
-                        <div class="col-12 m-2 p-2">
-                            <form method="post" action="/cars/delete/${car.id}">
-                                <input type="hidden" name="_csrf" value="${_csrf.token}">
-                                <button type="submit" class="btn btn-primary mb-2">Delete</button>
-                            </form>
-                        </div>
-                        </#if>
                     </div>
                 </div>
             </div>

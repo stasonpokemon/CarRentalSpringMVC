@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "refunds")
@@ -21,5 +22,7 @@ public class Refund {
     @Column(name = "damage_description")
     private String damageDescription;
     private double price;
+    @Column(name = "refund_date")
+    private Timestamp refundDate;
 
 }

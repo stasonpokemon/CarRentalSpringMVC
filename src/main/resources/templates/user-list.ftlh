@@ -2,7 +2,6 @@
 <@c.page>
     <h2>User list</h2>
 
-    <a href="/home">Home page</a>
     <br>
 
     <div class="form-row">
@@ -10,7 +9,7 @@
             <form action="/user" method="get" class="form-inline">
                 <input type="text" name="filter" class="form-control" value="${filter?if_exists}"
                        placeholder="Search by username"/>
-                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                <button type="submit" class="btn btn-primary mt-3 mb-3">Search</button>
             </form>
         </div>
     </div>
