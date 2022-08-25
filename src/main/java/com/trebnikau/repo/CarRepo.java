@@ -8,4 +8,5 @@ import java.util.List;
 public interface CarRepo extends CrudRepository<Car, Long> {
 
     List<Car> findCarsByProducer(String producer);
+    List<Car> findCarsByEmploymentStatus(boolean employmentStatus);
 }

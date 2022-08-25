@@ -1,9 +1,14 @@
 package com.trebnikau.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "cars")
+@Getter
+@Setter
 public class Car {
 
     @Id
@@ -13,36 +18,12 @@ public class Car {
     private String model;
     @Column(name = "release_date")
     private String releaseDate;
+    @Column(name = "price_per_day")
+    private Double pricePerDay;
+    @Column(name = "employment_status")
+    private boolean employmentStatus;
+    @Column(name = "damage_status")
+    private String damageStatus;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
 }
