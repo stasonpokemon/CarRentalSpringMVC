@@ -1,10 +1,11 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <h2>All orders:</h2>
+    <div class="container">
+        <h2>All orders:</h2>
 
-    <#if orders?size = 0>
-        No orders
+        <#if orders?size = 0>
+            No orders
         <#else>
             <table class="table">
                 <thead class="thead-dark">
@@ -30,7 +31,7 @@
                 </#list>
                 </tbody>
             </table>
-    </#if>
-
+        </#if>
+    </div>
 
 </@c.page>

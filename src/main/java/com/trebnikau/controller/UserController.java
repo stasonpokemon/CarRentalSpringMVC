@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -53,8 +55,8 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping()
-    public String saveUser(@RequestParam("userId") User user,
-                           @RequestParam("userName") String userName,
+    public String saveUser(@RequestParam("id") User user,
+                           @RequestParam("username") String userName,
                            @RequestParam Map<String, String> form) {
         userService.saveUserAfterEditing(user, userName, form);
         return "redirect:/user";
@@ -81,51 +83,42 @@ public class UserController {
         return "edit-passport";
     }
 
-    @PostMapping("/{user}/passport/edit")
-    public String saveEditPassport(@PathVariable("user") User user,
-                               @RequestParam("name") String name,
-                               @RequestParam("surname") String surname,
-                               @RequestParam("patronymic") String patronymic,
-                               @RequestParam("birthday") String birthday,
-                               @RequestParam("address") String address
-    ){
-        if(user != null && user.getPassport() != null){
-            ClientPassport passport = user.getPassport();
-            passport.setName(name);
-            passport.setSurname(surname);
-            passport.setPatronymic(patronymic);
-            passport.setBirthday(birthday);
-            passport.setAddress(address);
-            user.setPassport(passport);
-            userService.save(user);
-        }
-        return "redirect:/user/" + user.getId() + "/passport";
-    }
-
     @GetMapping("/{user}/passport/add")
-    public String addPassport(@PathVariable("user") User user){
+    public String addPassport(@PathVariable("user") User user,
+                              Model model){
+        model.addAttribute("user",user);
         return "create-passport";
     }
 
-    @PostMapping("/{user}/passport/add")
+    @PostMapping("/{user}/passport/{type}")
     public String savePassport(@PathVariable("user") User user,
-                               @RequestParam("name") String name,
-                               @RequestParam("surname") String surname,
-                               @RequestParam("patronymic") String patronymic,
-                               @RequestParam("birthday") String birthday,
-                               @RequestParam("address") String address
-    ){
-        if(user != null && user.getPassport() == null){
-            ClientPassport passport = new ClientPassport();
-            passport.setName(name);
-            passport.setSurname(surname);
-            passport.setPatronymic(patronymic);
-            passport.setBirthday(birthday);
-            passport.setAddress(address);
-            user.setPassport(passport);
-            userService.save(user);
+                               @PathVariable("type") String type,
+                               @Valid ClientPassport clientPassport,
+                               BindingResult bindingResult,
+                               Model model){
+        if (bindingResult.hasErrors()){
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            model.addAttribute("user",user);
+            model.addAttribute("passport",clientPassport);
+            if ("add".equals(type)){
+                return "create-passport";
+            } else {
+                return "edit-passport";
+            }
         }
-        return "redirect:/cars";
+
+        if ("add".equals(type) && user != null && user.getPassport() == null){
+            user.setPassport(clientPassport);
+            userService.save(user);
+            return "redirect:/cars";
+        } else if ("edit".equals(type) && user != null && user.getPassport() != null){
+            user.setPassport(clientPassport);
+            userService.save(user);
+            return "redirect:/user/" + user.getId() + "/passport";
+        } else {
+            return "redirect:/cars";
+        }
     }
 
     @GetMapping("/{user}/orders/list")

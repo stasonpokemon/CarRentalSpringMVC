@@ -6,6 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,13 +17,24 @@ import java.util.Set;
 @Table(name = "users")
 @Getter
 @Setter
+
+/* Если с классом user связаны другие таблицы, то в классах описывающие таблицы надо имплементировать
+ интерфейс Serializable иначе будет ошибка ConversionFailedException
+ */
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotBlank(message = "Please fill the username")
+//    @Min(value = 3, message = "Username must be more than 3 symbols")
     private String username;
+    @NotBlank(message = "Please fill the password")
+//    @Min(value = 6, message = "Password must be more than 6 symbols")
     private String password;
+    @NotBlank(message = "Please fill the email")
+    @Email(message = "Please fill the correct email")
+    private String email;
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

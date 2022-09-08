@@ -6,7 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping("/cars")
@@ -21,6 +27,7 @@ public class CarController {
                               @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
                               Model model) {
         Iterable<Car> cars;
+        Iterable<Car> allCars;
 
         if (sort != null && !sort.isEmpty() && "free".equals(sort)) {
             cars = carService.findCarsByEmploymentStatus();
@@ -34,71 +41,60 @@ public class CarController {
 
         if (filter != null && !filter.isEmpty()) {
             cars = carService.findCarsByProducer(filter);
+//            allCars = carService.findAll();
+//            cars = StreamSupport.stream(allCars.spliterator(), false).
+//                    filter(car -> car.getProducer().equals(filter)).collect(Collectors.toList());
         } else {
             cars = carService.findAll();
         }
         model.addAttribute("cars", cars);
+        model.addAttribute("allCars", cars);
         return "car-list";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/add")
+    public String addMenuCar() {
+        return "add-car";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
-    public String editCar(@PathVariable("id") Car car,
-                          Model model) {
+    public String editMenuCar(@PathVariable("id") Car car,
+                              Model model) {
         model.addAttribute("car", car);
         return "edit-car";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping()
-    public String saveCar(@RequestParam("carId") Car car,
-                          @RequestParam("carProducer") String carProducer,
-                          @RequestParam("carModel") String carModel,
-                          @RequestParam("carReleaseDate") String carReleaseDate,
-                          @RequestParam("carPricePerDay") String carPricePerDay,
-                          @RequestParam("carEmploymentStatus") String carEmploymentStatus,
-                          @RequestParam("carDamageStatus") String carDamageStatus
-    ) {
-        car.setProducer(carProducer);
-        car.setModel(carModel);
-        car.setReleaseDate(carReleaseDate);
-        car.setPricePerDay(Double.parseDouble(carPricePerDay));
-        if ("FREE".equals(carEmploymentStatus)) {
-            car.setEmploymentStatus(true);
-        } else {
-            car.setEmploymentStatus(false);
+    public String saveEditCar(@Valid Car car,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            model.addAttribute("car", car);
+            return "edit-car";
         }
-        car.setDamageStatus(carDamageStatus);
         carService.saveCar(car);
         return "redirect:/cars";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/add")
-    public String addCar() {
-        return "add-car";
-    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add")
-    public String addCar(@RequestParam("carProducer") String carProducer,
-                         @RequestParam("carModel") String carModel,
-                         @RequestParam("carReleaseDate") String carReleaseDate,
-                         @RequestParam("carPricePerDay") String carPricePerDay,
-                         @RequestParam("carEmploymentStatus") String carEmploymentStatus,
-                         @RequestParam("carDamageStatus") String carDamageStatus) {
-        Car car = new Car();
-        car.setProducer(carProducer);
-        car.setModel(carModel);
-        car.setReleaseDate(carReleaseDate);
-        car.setPricePerDay(Double.parseDouble(carPricePerDay));
-        if ("FREE".equals(carEmploymentStatus)) {
-            car.setEmploymentStatus(true);
-        } else {
-            car.setEmploymentStatus(false);
+    public String addNewCar(@Valid Car car,
+                            BindingResult bindingResult,
+                            Model model) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            model.addAttribute("car", car);
+            return "add-car";
         }
-        car.setDamageStatus(carDamageStatus);
         carService.saveCar(car);
+
         return "redirect:/cars";
     }
 

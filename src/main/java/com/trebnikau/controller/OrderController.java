@@ -3,16 +3,18 @@ package com.trebnikau.controller;
 import com.trebnikau.entity.*;
 import com.trebnikau.repo.OrderRepo;
 import com.trebnikau.repo.RefundRepo;
-import com.trebnikau.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/orders")
@@ -23,7 +25,6 @@ public class OrderController {
 
     @Autowired
     private OrderRepo orderRepo;
-
 
 
     @GetMapping("/{user}/{car}")
@@ -43,16 +44,21 @@ public class OrderController {
     @PostMapping("/{user}/{car}")
     public String addOrder(@PathVariable("user") User user,
                            @PathVariable("car") Car car,
-                           @RequestParam("rentalPeriod") String rentalPeriod,
+                           @Valid Order order,
+                           BindingResult bindingResult,
                            Model model) {
-        double orderPrice = (car.getPricePerDay() * Double.parseDouble(rentalPeriod));
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            model.addAttribute("passportIsAvailable", true);
+            return "create-order";
+        }
+        double orderPrice = (car.getPricePerDay() * order.getRentalPeriod());
         car.setEmploymentStatus(false);
-        Order order = new Order();
         order.setCar(car);
         order.setUser(user);
         order.setOrderDate(new Timestamp(new Date().getTime()));
         order.setPrice(orderPrice);
-        order.setRentalPeriod(Integer.parseInt(rentalPeriod));
         order.setOrderStatus(OrderStatus.UNDER_CONSIDERATION);
         orderRepo.save(order);
         model.addAttribute("notification", true);
@@ -125,6 +131,7 @@ public class OrderController {
         refund.setPrice(Double.parseDouble(repairCost));
         refund.setRefundDate(new Timestamp(new Date().getTime()));
         order.setRefund(refund);
+        order.getCar().setDamageStatus(damageDescription);
         orderRepo.save(order);
         return "redirect:/orders/return-processing";
     }
@@ -133,7 +140,7 @@ public class OrderController {
     @GetMapping("/refunds/list")
     public String showAllRefunds(Model model) {
         Iterable<Refund> refunds = refundRepo.findAll();
-        model.addAttribute("refunds",refunds);
+        model.addAttribute("refunds", refunds);
         return "show-all-refunds";
     }
 
