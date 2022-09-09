@@ -2,7 +2,13 @@
 <#include "parts/security.ftlh">
 <@c.page>
 
-    <div class="container">
+    <style>
+        .search-container {
+            padding: 0;
+        }
+    </style>
+
+    <div class="container mt-3">
         <h2>Car list</h2>
 
         <br>
@@ -10,18 +16,32 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <form action="/cars" method="get" class="form-inline">
-                    <input type="text" name="filter" class="form-control" list="datalistOptions"
-                           value="${filter?if_exists}"
-                           placeholder="Search by producer"/>
-                    <datalist id="datalistOptions">
-                        <#list allCars as carFromAll>
-                            <option value="${carFromAll.producer}"/>
-                        </#list>
-                    </datalist>
-                    <button type="submit" class="btn btn-primary mt-3 mb-3">Search</button>
+                    <div class="container search-container">
+                        <div class="row align-items-start">
+                            <div class="col">
+                                <input type="text" name="filter" class="form-control" list="datalistOptions"
+                                       value="${filter?if_exists}"
+                                       placeholder="Search by producer"/>
+                                <datalist id="datalistOptions">
+                                    <#list cars as car>
+                                        <option value="${car.producer}"/>
+                                    </#list>
+                                </datalist>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
+
+        <#if isAdmin>
+            <div class="col-12 mt-3 mb-3">
+                <button type="submit" class="btn btn-primary" onclick="window.location ='/cars/add'">Add car</button>
+            </div>
+        </#if>
 
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle mb-3" type="button" data-bs-toggle="dropdown"
@@ -31,7 +51,8 @@
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/cars">All cars</a></li>
                 <li><a class="dropdown-item" href="/cars?sort=free">Only free cars</a></li>
-                <li><a class="dropdown-item" href="/cars?sort=price">By price</a></li>
+                <li><a class="dropdown-item" href="/cars?sort=price_min">By price from min</a></li>
+                <li><a class="dropdown-item" href="/cars?sort=price_max">By price from max</a></li>
                 <#--            <a class="dropdown-item" href="#">By name</a>-->
             </ul>
         </div>
@@ -69,10 +90,6 @@
             </#list>
         </div>
 
-        <#if isAdmin>
-            <div class="col-12 m-2 p-2">
-                <button type="submit" class="btn btn-primary" onclick="window.location ='/cars/add'">Add car</button>
-            </div>
-        </#if>
+
     </div>
 </@c.page>

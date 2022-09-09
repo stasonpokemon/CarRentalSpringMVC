@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping("/cars")
@@ -27,28 +25,27 @@ public class CarController {
                               @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
                               Model model) {
         Iterable<Car> cars;
-        Iterable<Car> allCars;
 
         if (sort != null && !sort.isEmpty() && "free".equals(sort)) {
             cars = carService.findCarsByEmploymentStatus();
             model.addAttribute("cars", cars);
             return "car-list";
-        } else if (sort != null && !sort.isEmpty() && "price".equals(sort)) {
-            cars = carService.sortCarsByPrice();
+        } else if (sort != null && !sort.isEmpty() && "price_min".equals(sort)) {
+            cars = carService.sortCarsByPriceFromMin();
+            model.addAttribute("cars", cars);
+            return "car-list";
+        } else if (sort != null && !sort.isEmpty() && "price_max".equals(sort)) {
+            cars = carService.sortCarsByPriceFromMax();
             model.addAttribute("cars", cars);
             return "car-list";
         }
 
         if (filter != null && !filter.isEmpty()) {
             cars = carService.findCarsByProducer(filter);
-//            allCars = carService.findAll();
-//            cars = StreamSupport.stream(allCars.spliterator(), false).
-//                    filter(car -> car.getProducer().equals(filter)).collect(Collectors.toList());
         } else {
             cars = carService.findAll();
         }
         model.addAttribute("cars", cars);
-        model.addAttribute("allCars", cars);
         return "car-list";
     }
 

@@ -1,7 +1,7 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
     <form method="post" action="/user/${currentUserId}/passport/edit">
         <div class="col-md-4">
             <label for="nameId" class="form-label">Name</label>

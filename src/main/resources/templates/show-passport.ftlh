@@ -1,7 +1,7 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
         <#if passportIsAvailable == true>
             <dl class="row">
                 <dt class="col-sm-3">Name</dt>

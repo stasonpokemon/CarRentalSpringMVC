@@ -31,30 +31,47 @@ public class UserService implements UserDetailsService {
 
     public void saveUserAfterEditing(User user, String userName, Map<String, String> form) {
         user.setUsername(userName);
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-        // для начала нужно очистить все роли у user
-        user.getRoles().clear();
-        for (String key : form.keySet()) {
-            if (roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
+        addUserRoles(user, form);
         // если в чекбоксе небыло выбранно ни одной роли, тогда автоматически присваетвается роль user
-        if (user.getRoles().size() == 0){
+        if (user.getRoles().size() == 0) {
             user.getRoles().add(Role.USER);
         }
         userRepo.save(user);
     }
 
-    public int addNewUser(User user){
+    public User addUserRoles(User user, Map<String, String> form) {
+        Set<String> roles = getSetOfRoles();
+        // для начала нужно очистить все роли у user
+        user.getRoles().clear();
+        for (String key : form.keySet()) {
+            if (roles.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+        return user;
+    }
+
+    public Set<String> getSetOfRoles() {
+        return Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
+    }
+
+    public boolean isEditUserFormContainsRoles(Map<String, String> form){
+        for (String key : form.keySet()) {
+            if (getSetOfRoles().contains(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public int addNewUser(User user) {
         User userByUsername = userRepo.findUserByUsername(user.getUsername());
         User userByEmail = userRepo.findUserByEmail(user.getEmail());
-        if (userByUsername != null){
+        if (userByUsername != null) {
             return -1;
-        } else if(userByEmail != null){
-            return  0;
+        } else if (userByEmail != null) {
+            return 0;
         } else {
             user.setActive(true);
             user.setRoles(Collections.singleton(Role.USER));

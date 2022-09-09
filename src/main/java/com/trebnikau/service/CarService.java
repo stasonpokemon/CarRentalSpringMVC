@@ -40,10 +40,17 @@ public class CarService {
         return carRepo.findCarsByEmploymentStatus(true);
     }
 
-    public Iterable<Car> sortCarsByPrice() {
+    public Iterable<Car> sortCarsByPriceFromMin() {
 
         List<Car> cars = StreamSupport.stream(carRepo.findAll().spliterator(), false).
                 sorted(Comparator.comparingDouble(Car::getPricePerDay)).
+                collect(Collectors.toList());
+        return cars;
+    }
+    public Iterable<Car> sortCarsByPriceFromMax() {
+
+        List<Car> cars = StreamSupport.stream(carRepo.findAll().spliterator(), false).
+                sorted(Comparator.comparingDouble(Car::getPricePerDay).reversed()).
                 collect(Collectors.toList());
         return cars;
     }

@@ -2,7 +2,7 @@
 <#import "login.ftlh" as l>
 
 
-<nav class="navbar navbar-expand-lg bg-light">
+<nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand ms-3" href="<#if name != "unknown">/home<#else>/</#if>">Car rental</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
