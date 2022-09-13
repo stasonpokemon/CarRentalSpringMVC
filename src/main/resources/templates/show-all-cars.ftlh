@@ -23,7 +23,7 @@
                                        value="${filter?if_exists}"
                                        placeholder="Search by producer"/>
                                 <datalist id="datalistOptions">
-                                    <#list cars as car>
+                                    <#list allCars as car>
                                         <option value="${car.producer}"/>
                                     </#list>
                                 </datalist>
@@ -38,13 +38,13 @@
         </div>
 
         <#if isAdmin>
-            <div class="col-12 mt-3 mb-3">
+            <div class="col-12 mt-3">
                 <button type="submit" class="btn btn-primary" onclick="window.location ='/cars/add'">Add car</button>
             </div>
         </#if>
 
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle mb-3" type="button" data-bs-toggle="dropdown"
+            <button class="btn btn-secondary dropdown-toggle mb-3 mt-3" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
                 Sort
             </button>
@@ -71,7 +71,7 @@
                             <div class="hstack gap-3">
                                 <#if car.employmentStatus == true>
                                     <button type="button" class="btn btn-primary mb-2"
-                                            onclick="window.location='/orders/${currentUserId}/${car.id}'">Order
+                                            onclick="window.location='/orders/create/${currentUserId}/${car.id}'">Order
                                     </button>
                                 </#if>
                                 <#if isAdmin>

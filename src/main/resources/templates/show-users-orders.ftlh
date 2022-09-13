@@ -1,7 +1,7 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
         <h2>My orders:</h2>
 
         <table class="table">

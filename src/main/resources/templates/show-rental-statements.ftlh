@@ -2,10 +2,10 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
     <div class="container">
-        <h2>Rental applications:</h2>
+        <h2>Rental statement:</h2>
 
         <#if orders?size = 0>
-            No rental applications
+            No rental statement
         <#else>
             <div class="list-group">
                 <table class="table">
@@ -31,12 +31,12 @@
                             <td>${order.rentalPeriod}</td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                    <form method="post" action="/orders/rental-applications/cancel">
+                                    <form method="post" action="/orders/rental-statements/cancel">
                                         <input type="hidden" name="orderId" value="${order.id}">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}">
                                         <button type="submit" class="btn btn-danger me-2">Refuse</button>
                                     </form>
-                                    <form method="post" action="/orders/rental-applications/accept">
+                                    <form method="post" action="/orders/rental-statements/accept">
                                         <input type="hidden" name="orderId" value="${order.id}">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}">
                                         <button type="submit" class="btn btn-success">Accept</button>

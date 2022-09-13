@@ -1,22 +1,18 @@
 package com.trebnikau.controller;
 
 import com.trebnikau.entity.ClientPassport;
-import com.trebnikau.entity.Order;
 import com.trebnikau.entity.Role;
 import com.trebnikau.entity.User;
-import com.trebnikau.repo.OrderRepo;
-import com.trebnikau.repo.UserRepo;
+import com.trebnikau.service.OrderService;
 import com.trebnikau.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,26 +20,16 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private OrderRepo orderRepo;
+    private OrderService orderService;
 
     @Autowired
     private UserService userService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public String userList(@RequestParam(required = false, name = "filter", defaultValue = "") String filter,
-                           Model model) {
-        Iterable<User> users;
-        if (filter != null && !filter.isEmpty()) {
-            users = userRepo.findAllByUsername(filter);
-        } else {
-            users = userRepo.findAll();
-        }
-        model.addAttribute("users", users);
-        return "user-list";
+    public String showUserList(@RequestParam(required = false, name = "filter", defaultValue = "") String filter,
+                               Model model) {
+        return userService.showUserList(filter, model);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -51,55 +37,62 @@ public class UserController {
     public String userEdit(@PathVariable("id") User user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
-        return "user-edit";
+        return "edit-user";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping()
     public String saveUser(@RequestParam("id") User user,
-                           @RequestParam("username") String userName,
+                           @RequestParam("username") String username,
                            @RequestParam Map<String, String> form,
                            Model model) {
-        // Проверяем, пустое ли имя пользователя
-        boolean isUsernameEmpty = StringUtils.isEmpty(userName);
-        // Проверяем, содержит ли форма роли. Если содержит, то сохранаяем пользователя, если нет, то кидаем валидацию на форму
-        if (userService.isEditUserFormContainsRoles(form) && !isUsernameEmpty) {
-            userService.saveUserAfterEditing(user, userName, form);
-        }else {
-            // Если мы поменяли имя в форме, но вылезла валидация ролей, то кидаем в форму изменённое имя
-            model.addAttribute("username", userName);
-            if (isUsernameEmpty){
-                model.addAttribute("usernameError", "Username can't be empty");
-            }
-            System.out.println("not contains");
-            model.addAttribute("user", user);
-            model.addAttribute("roles", Role.values());
-            model.addAttribute("rolesError", "Roles can't be empty .Select one or more roles for the user");
-            return "user-edit";
-        }
-        return "redirect:/user";
+        return userService.saveUserAfterChangingItByAdmin(user, username, form, model);
+    }
+
+    @GetMapping("/{user}/profile")
+    public String showUserProfile(@PathVariable("user") User user,
+                                  Model model) {
+        model.addAttribute("user", user);
+        return "show-user-profile";
+    }
+
+    @GetMapping("/{user}/profile/edit_password")
+    public String editUserPassword(@PathVariable("user") User user,
+                                   Model model) {
+        model.addAttribute("user", user);
+        return "edit-user-password";
+    }
+
+    @PostMapping("/{user}/profile/edit_password")
+    public String saveUserPassword(@PathVariable("user") User user,
+                                   @RequestParam("currentPassword") String currentPassword,
+                                   @RequestParam("newPassword") String newPassword,
+                                   @RequestParam("passwordConfirmation") String passwordConfirmation,
+                                   Model model) {
+        return userService.saveUserPassword(user, currentPassword, newPassword, passwordConfirmation, model);
+    }
+
+    @GetMapping("/{user}/profile/edit_username")
+    public String editUserUsername(@PathVariable("user") User user,
+                                   Model model) {
+        model.addAttribute("user", user);
+        return "edit-user-username";
+    }
+
+
+    // Изменённый username менятся в бд, но в профиле поменяется только после повторной авторизации
+    @PostMapping("/{user}/profile/edit_username")
+    public String saveUserUsername(@PathVariable("user") User user,
+                                   @RequestParam("username") String newUsername,
+                                   Model model) {
+        return userService.saveUserUsername(user, newUsername, model);
     }
 
 
     @GetMapping("/{user}/passport")
-    public String showPassport(@PathVariable("user") User user,
-                               Model model) {
-        if (user.getPassport() != null) {
-            ClientPassport passport = user.getPassport();
-            model.addAttribute("passportIsAvailable", true);
-            model.addAttribute("passport", passport);
-        } else {
-            model.addAttribute("passportIsAvailable", false);
-        }
-        return "show-passport";
-    }
-
-    @GetMapping("/{user}/passport/edit")
-    public String editPassport(@PathVariable("user") User user,
-                               Model model) {
-        ClientPassport passport = user.getPassport();
-        model.addAttribute("passport", passport);
-        return "edit-passport";
+    public String showUserPassport(@PathVariable("user") User user,
+                                   Model model) {
+        return userService.showUserPassport(user, model);
     }
 
     @GetMapping("/{user}/passport/add")
@@ -109,44 +102,27 @@ public class UserController {
         return "create-passport";
     }
 
+    @GetMapping("/{user}/passport/edit")
+    public String editPassport(@PathVariable("user") User user,
+                               Model model) {
+        model.addAttribute("passport", user.getPassport());
+        return "edit-passport";
+    }
+
+
     @PostMapping("/{user}/passport/{type}")
     public String savePassport(@PathVariable("user") User user,
                                @PathVariable("type") String type,
                                @Valid ClientPassport clientPassport,
                                BindingResult bindingResult,
                                Model model) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = UtilsController.getErrors(bindingResult);
-            model.mergeAttributes(errors);
-            model.addAttribute("user", user);
-            model.addAttribute("passport", clientPassport);
-            if ("add".equals(type)) {
-                return "create-passport";
-            } else {
-                return "edit-passport";
-            }
-        }
-
-        if ("add".equals(type) && user != null && user.getPassport() == null) {
-            user.setPassport(clientPassport);
-            userService.save(user);
-            return "redirect:/cars";
-        } else if ("edit".equals(type) && user != null && user.getPassport() != null) {
-            user.setPassport(clientPassport);
-            userService.save(user);
-            return "redirect:/user/" + user.getId() + "/passport";
-        } else {
-            return "redirect:/cars";
-        }
+        return userService.saveUserPassport(user, type, clientPassport, bindingResult, model);
     }
 
     @GetMapping("/{user}/orders/list")
     public String showUserOrders(@PathVariable("user") User user,
                                  Model model) {
-        List<Order> orderByUser = orderRepo.findOrderByUser(user);
-        model.addAttribute("orders", orderByUser);
+        model.addAttribute("orders", orderService.findOrderByUser(user));
         return "show-users-orders";
     }
-
-
 }

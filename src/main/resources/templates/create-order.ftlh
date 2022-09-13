@@ -2,7 +2,7 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
 
-    <div class="container">
+    <div class="container mt-3">
     <#if passportIsAvailable != true>
         You need to add your passport for order
         <div class="col-12 m-2 p-2">
@@ -24,7 +24,7 @@
                 <dd class="col-sm-9">${car.pricePerDay}$</dd>
             </dl>
 
-            <form method="post" action="/orders/${currentUserId}/${car.id}">
+            <form method="post" action="/orders/create/${currentUserId}/${car.id}">
 
                 <div class="col-md-4">
                     <label for="rentalPeriodId" class="form-label">Rental period</label>

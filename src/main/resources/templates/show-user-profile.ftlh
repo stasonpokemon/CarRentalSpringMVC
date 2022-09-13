@@ -1,0 +1,23 @@
+<#include "parts/security.ftlh">
+<#import "parts/common.ftlh" as c>
+<@c.page>
+    <div class="container mt-3">
+        <h2>Profile</h2>
+        <dl class="row">
+            <dt class="col-sm-3">Username</dt>
+            <dd class="col-sm-9">${user.username}</dd>
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">${user.email}</dd>
+        </dl>
+        <button type="button" class="btn btn-primary mb-2"
+                onclick="window.location='/user/${user.id}/passport'">Show passport
+        </button>
+        <button type="button" class="btn btn-primary mb-2 ms-3"
+                onclick="window.location='/user/${user.id}/profile/edit_password'">Edit password
+        </button>
+        <button type="button" class="btn btn-primary mb-2 ms-3"
+                onclick="window.location='/user/${user.id}/profile/edit_username'">Edit username
+        </button>
+
+    </div>
+</@c.page>

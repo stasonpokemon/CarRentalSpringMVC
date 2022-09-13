@@ -2,6 +2,7 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
     <div class="container mt-3">
+        <h2>Passport</h2>
         <#if passportIsAvailable == true>
             <dl class="row">
                 <dt class="col-sm-3">Name</dt>
@@ -15,18 +16,18 @@
                 <dt class="col-sm-3">Address</dt>
                 <dd class="col-sm-9">${passport.address}</dd>
             </dl>
-            <div class="col-12 m-2 p-2">
-                <button type="submit" class="btn btn-primary"
+<#--            <div class="col-12 m-2 p-2">-->
+                <button type="submit" class="btn btn-primary mb-2"
                         onclick="window.location ='/user/${currentUserId}/passport/edit'">Edit passport
                 </button>
-            </div>
+<#--            </div>-->
         <#else>
             You need to add your passport for order
-            <div class="col-12 m-2 p-2">
-                <button type="submit" class="btn btn-primary"
+<#--            <div class="col-12 m-2 p-2">-->
+                <button type="submit" class="btn btn-primary mb-2"
                         onclick="window.location ='/user/${currentUserId}/passport/add'">Add passport
                 </button>
-            </div>
+<#--            </div>-->
         </#if>
     </div>
 

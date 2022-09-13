@@ -1,6 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
         <h2>User list</h2>
 
         <br>

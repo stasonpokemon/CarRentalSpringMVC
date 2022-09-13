@@ -1,8 +1,8 @@
 package com.trebnikau.controller;
 
 import com.trebnikau.entity.*;
-import com.trebnikau.repo.OrderRepo;
-import com.trebnikau.repo.RefundRepo;
+import com.trebnikau.service.OrderService;
+import com.trebnikau.service.RefundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -11,137 +11,72 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
 
     @Autowired
-    private RefundRepo refundRepo;
+    private RefundService refundService;
 
     @Autowired
-    private OrderRepo orderRepo;
+    private OrderService orderService;
 
+    @GetMapping()
+    public String showAllOrders(Model model) {
+        return orderService.showAllOrders(model);
+    }
 
-    @GetMapping("/{user}/{car}")
+    @GetMapping("/create/{user}/{car}")
     public String createOrder(@PathVariable("user") User user,
                               @PathVariable("car") Car car,
                               Model model) {
-        if (user.getPassport() == null) {
-            model.addAttribute("passportIsAvailable", false);
-            return "create-order";
-        }
-
-        model.addAttribute("passportIsAvailable", true);
-        model.addAttribute("car", car);
-        return "create-order";
+        return orderService.createOrder(user, car, model);
     }
 
-    @PostMapping("/{user}/{car}")
-    public String addOrder(@PathVariable("user") User user,
-                           @PathVariable("car") Car car,
-                           @Valid Order order,
-                           BindingResult bindingResult,
-                           Model model) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = UtilsController.getErrors(bindingResult);
-            model.mergeAttributes(errors);
-            model.addAttribute("passportIsAvailable", true);
-            return "create-order";
-        }
-        double orderPrice = (car.getPricePerDay() * order.getRentalPeriod());
-        car.setEmploymentStatus(false);
-        order.setCar(car);
-        order.setUser(user);
-        order.setOrderDate(new Timestamp(new Date().getTime()));
-        order.setPrice(orderPrice);
-        order.setOrderStatus(OrderStatus.UNDER_CONSIDERATION);
-        orderRepo.save(order);
-        model.addAttribute("notification", true);
-        return "redirect:/cars";
+    @PostMapping("/create/{user}/{car}")
+    public String saveOrder(@PathVariable("user") User user,
+                            @PathVariable("car") Car car,
+                            @Valid Order order,
+                            BindingResult bindingResult,
+                            Model model) {
+        return orderService.saveOrder(user, car, order, bindingResult, model);
     }
 
-    @GetMapping("/list")
-    public String showAllOrders(Model model) {
-        Iterable<Order> allOrders = orderRepo.findAll();
-        model.addAttribute("orders", allOrders);
-        return "show-all-orders";
-    }
 
-    @GetMapping("/rental-applications")
-    public String showRentalApplications(Model model) {
-        List<Order> orders = orderRepo.findOrderByOrderStatus(OrderStatus.UNDER_CONSIDERATION);
-        model.addAttribute("orders", orders);
-        return "show-rental-applications";
+    @GetMapping("/rental-statements")
+    public String showRentalStatements(Model model) {
+        return orderService.showRentalStatements(model);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/rental-applications/accept")
-    public String acceptOrder(@RequestParam("orderId") Order order) {
-        order.setOrderStatus(OrderStatus.CONFIRMED);
-        orderRepo.save(order);
-        return "redirect:/orders/rental-applications";
+    @PostMapping("/rental-statements/{type}")
+    public String acceptOrCancelOrder(@PathVariable("type") String typeOfRequest,
+                                      @RequestParam("orderId") Order order) {
+        return orderService.acceptOrCancelOrder(typeOfRequest, order);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/rental-applications/cancel")
-    public String cancelOrder(@RequestParam("orderId") Order order) {
-        order.setOrderStatus(OrderStatus.REFUSAL);
-        order.getCar().setEmploymentStatus(true);
-        orderRepo.save(order);
-        return "redirect:/orders/rental-applications";
-    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/return-processing")
     public String returnProcessing(Model model) {
-        List<Order> orders = orderRepo.findOrderByRefundAndOrderStatus(null, OrderStatus.CONFIRMED);
-        model.addAttribute("orders", orders);
-        return "return-processing";
+        return orderService.returnProcessing(model);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/return-processing/without")
-    public String addRefundWithoutDamage(@RequestParam("orderId") Order order) {
-        Refund refund = new Refund();
-        refund.setOrder(order);
-        refund.setDamageStatus(true);
-        refund.setDamageDescription("-");
-        refund.setPrice(0);
-        refund.setRefundDate(new Timestamp(new Date().getTime()));
-        order.setRefund(refund);
-        order.getCar().setEmploymentStatus(true);
-        orderRepo.save(order);
-        return "redirect:/orders/return-processing";
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/return-processing/with")
-    public String addRefundWithDamage(@RequestParam("orderId") Order order,
-                                      @RequestParam("damageDescription") String damageDescription,
-                                      @RequestParam("repairCost") String repairCost) {
-        Refund refund = new Refund();
-        refund.setOrder(order);
-        refund.setDamageStatus(false);
-        refund.setDamageDescription(damageDescription);
-        refund.setPrice(Double.parseDouble(repairCost));
-        refund.setRefundDate(new Timestamp(new Date().getTime()));
-        order.setRefund(refund);
-        order.getCar().setDamageStatus(damageDescription);
-        orderRepo.save(order);
-        return "redirect:/orders/return-processing";
+    @PostMapping("/return-processing/{type}")
+    public String addRefundWithOrWithoutDamage(@PathVariable("type") String typeOfRequest,
+                                               @RequestParam("orderId") Order order,
+                                               @RequestParam(value = "damageDescription", required = false, defaultValue = "") String damageDescription,
+                                               @RequestParam(value = "repairCost", required = false, defaultValue = "") String repairCost) {
+        return orderService.addRefundWithOrWithoutDamage(typeOfRequest, order, damageDescription, repairCost);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/refunds/list")
     public String showAllRefunds(Model model) {
-        Iterable<Refund> refunds = refundRepo.findAll();
-        model.addAttribute("refunds", refunds);
-        return "show-all-refunds";
+        return  refundService.showAllRefunds(model);
     }
 
 }
