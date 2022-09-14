@@ -186,9 +186,9 @@ public class UserService implements UserDetailsService {
 
     public String showUserPassport(User user, Model model) {
         if (user.getPassport() != null) {
-            ClientPassport passport = user.getPassport();
             model.addAttribute("passportIsAvailable", true);
-            model.addAttribute("passport", passport);
+            model.addAttribute("passport",  user.getPassport());
+            model.addAttribute("user", user);
         } else {
             model.addAttribute("passportIsAvailable", false);
         }

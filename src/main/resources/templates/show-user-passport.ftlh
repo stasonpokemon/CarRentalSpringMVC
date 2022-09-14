@@ -17,9 +17,11 @@
                 <dd class="col-sm-9">${passport.address}</dd>
             </dl>
 <#--            <div class="col-12 m-2 p-2">-->
+            <#if user.id == currentUserId>
                 <button type="submit" class="btn btn-primary mb-2"
                         onclick="window.location ='/user/${currentUserId}/passport/edit'">Edit passport
                 </button>
+            </#if>
 <#--            </div>-->
         <#else>
             You need to add your passport for order

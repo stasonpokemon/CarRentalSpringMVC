@@ -3,7 +3,7 @@
 
 <@c.page>
     <div class="container mt-3">
-        <form method="post" action="/user/${user.id}/passport/add">
+        <form method="post" action="/user/${currentUser.id}/passport/add">
 
             <div class="col-md-4">
                 <label for="nameId" class="form-label">Name</label>

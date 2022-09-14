@@ -11,9 +11,9 @@
 
                         <div class="form-floating mb-3">
                             <input type="text"
-                                   class="form-control <#if user??>${(usernameError??)?string('is-invalid','is-valid')}</#if>"
+                                   class="form-control <#if currentUser??>${(usernameError??)?string('is-invalid','is-valid')}</#if>"
                                    id="usernameId" name="username" placeholder="User name"
-                                   value="<#if user??>${user.username}</#if>"
+                                   value="<#if currentUser??>${currentUser.username}</#if>"
                                    aria-describedby="validationUsernameFeedback">
                             <label class="floatingInput">User name</label>
                             <#if usernameError??>
@@ -56,10 +56,10 @@
 
                             <div class="form-floating mb-3">
                                 <input type="email"
-                                       class="form-control <#if user??>${(emailError??)?string('is-invalid','is-valid')}</#if>"
+                                       class="form-control <#if currentUser??>${(emailError??)?string('is-invalid','is-valid')}</#if>"
                                        id="emailId"
                                        name="email" placeholder="Email" aria-describedby="validationEmailFeedback"
-                                       value="<#if user??>${user.email}</#if>">
+                                       value="<#if currentUser??>${currentUser.email}</#if>">
                                 <label class="form-label">Email</label>
                                 <#if emailError??>
                                     <div id="validationEmailFeedback" class="invalid-feedback">
@@ -92,7 +92,7 @@
 
 <#macro loigout>
     <form action="/logout" method="post">
-        <button type="submit" class="btn btn-primary me-3"><#if user??>Sign out<#else>Sign in</#if></button>
+        <button type="submit" class="btn btn-primary me-3"><#if currentUser??>Sign out<#else>Sign in</#if></button>
         <input type="hidden" name="_csrf" value="${_csrf.token}">
     </form>
 </#macro>

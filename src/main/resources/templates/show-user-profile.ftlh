@@ -12,12 +12,14 @@
         <button type="button" class="btn btn-primary mb-2"
                 onclick="window.location='/user/${user.id}/passport'">Show passport
         </button>
+        <#if user.id == currentUserId>
         <button type="button" class="btn btn-primary mb-2 ms-3"
-                onclick="window.location='/user/${user.id}/profile/edit_password'">Edit password
+                onclick="window.location='/user/${currentUser.id}/profile/edit_password'">Edit password
         </button>
         <button type="button" class="btn btn-primary mb-2 ms-3"
-                onclick="window.location='/user/${user.id}/profile/edit_username'">Edit username
+                onclick="window.location='/user/${currentUser.id}/profile/edit_username'">Edit username
         </button>
+        </#if>
 
     </div>
 </@c.page>

@@ -12,7 +12,7 @@
                     <input type="text"
                            class="form-control ${(usernameError??)?string('is-invalid','')}"
                            id="usernameId"
-                           name="username" value="${user.username}" placeholder="Enter new username"
+                           name="username" value="${currentUser.username}" placeholder="Enter new username"
                            aria-describedby="validationUsernameFeedback"/>
                     <label class="floatingInput">Enter new username</label>
                     <#if usernameError??>
