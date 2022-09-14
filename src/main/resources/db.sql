@@ -4,8 +4,8 @@ CREATE
 DATABASE IF NOT EXISTS car_rental_spring;
 USE car_rental_spring;
 
-INSERT INTO users(id, username, password, active)
-VALUES (1, 'admin', 1, 0x01);
+INSERT INTO users(id, username, password, active, email)
+VALUES (1, 'admin', 1, 0x01,'stasonpokemon@icloud.com');
 INSERT INTO user_role(user_id, roles)
 VALUES (1, 'ADMIN');
 
