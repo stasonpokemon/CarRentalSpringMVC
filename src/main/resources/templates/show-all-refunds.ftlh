@@ -4,7 +4,7 @@
     <div class="container mt-3">
         <h2>All refunds:</h2>
         <#if refunds?size = 0>
-            No refunds
+            There is no  refunds
         <#else>
 
             <table class="table">

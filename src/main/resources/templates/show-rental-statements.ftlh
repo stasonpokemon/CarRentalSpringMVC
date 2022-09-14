@@ -5,7 +5,7 @@
         <h2>Rental statement:</h2>
 
         <#if orders?size = 0>
-            No rental statement
+            There is no rental statement
         <#else>
             <div class="list-group">
                 <table class="table">

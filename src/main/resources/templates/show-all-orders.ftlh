@@ -5,7 +5,7 @@
         <h2>All orders:</h2>
 
         <#if orders?size = 0>
-            No orders
+            There is no  orders
         <#else>
 
             <table class="table">

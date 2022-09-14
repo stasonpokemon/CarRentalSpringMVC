@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class Car {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Please fill the producer")
     @Length(max = 2048, message = "Producer too long. Max length is 2048")
@@ -43,5 +43,7 @@ public class Car {
     @NotBlank(message = "Please fill the image link")
     @Column(name = "img_link")
     private String imageLink;
+    @Column(name = "is_deleted")
+    private boolean deleted;
 
 }

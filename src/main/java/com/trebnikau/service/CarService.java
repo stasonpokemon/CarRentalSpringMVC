@@ -24,53 +24,57 @@ public class CarService {
         carRepo.save(car);
     }
 
-    public void deleteCar(Long carId) {
-        carRepo.deleteById(carId);
+    public void deleteCar(Car car) {
+        car.setDeleted(true);
     }
 
     public Iterable<Car> findCarsByProducer(String filter) {
-        return carRepo.findCarsByProducer(filter);
+        return carRepo.findCarsByProducerAndDeleted(filter, false);
     }
 
     public Iterable<Car> findAll() {
         return carRepo.findAll();
     }
 
-
-    public Iterable<Car> findCarsByEmploymentStatus() {
-        return carRepo.findCarsByEmploymentStatus(true);
+    public Iterable<Car> findAllIsNotDeleted() {
+        return carRepo.findCarsByDeleted(false);
     }
 
-    public Iterable<Car> sortCarsByPriceFromMin() {
 
-        return StreamSupport.stream(carRepo.findAll().spliterator(), false).
+    public Iterable<Car> findCarsByEmploymentStatusAndIsNotDeleted() {
+        return carRepo.findCarsByEmploymentStatusAndDeleted(true, false);
+    }
+
+    public Iterable<Car> sortCarsByPriceFromMinIsNotDeleted() {
+
+        return StreamSupport.stream(findAllIsNotDeleted().spliterator(), false).
                 sorted(Comparator.comparingDouble(Car::getPricePerDay)).
                 collect(Collectors.toList());
     }
 
-    public Iterable<Car> sortCarsByPriceFromMax() {
+    public Iterable<Car> sortCarsByPriceFromMaxIsNotDeleted() {
 
-        return StreamSupport.stream(carRepo.findAll().spliterator(), false).
+        return StreamSupport.stream(findAllIsNotDeleted().spliterator(), false).
                 sorted(Comparator.comparingDouble(Car::getPricePerDay).reversed()).
                 collect(Collectors.toList());
     }
 
     public String showAllCars(String filter, String sort, Model model) {
         // Отдельно список всех машин нужен для селекта поиска
-        model.addAttribute("allCars", findAll());
+        model.addAttribute("allCars", findAllIsNotDeleted());
 
         Iterable<Car> cars;
 
         if (sort != null && !sort.isEmpty() && "free".equals(sort)) {
-            cars = findCarsByEmploymentStatus();
+            cars = findCarsByEmploymentStatusAndIsNotDeleted();
             model.addAttribute("cars", cars);
             return "show-all-cars";
         } else if (sort != null && !sort.isEmpty() && "price_min".equals(sort)) {
-            cars = sortCarsByPriceFromMin();
+            cars = sortCarsByPriceFromMinIsNotDeleted();
             model.addAttribute("cars", cars);
             return "show-all-cars";
         } else if (sort != null && !sort.isEmpty() && "price_max".equals(sort)) {
-            cars = sortCarsByPriceFromMax();
+            cars = sortCarsByPriceFromMaxIsNotDeleted();
             model.addAttribute("cars", cars);
             return "show-all-cars";
         }
@@ -78,7 +82,7 @@ public class CarService {
         if (filter != null && !filter.isEmpty()) {
             cars = findCarsByProducer(filter);
         } else {
-            cars = findAll();
+            cars = findAllIsNotDeleted();
         }
         model.addAttribute("cars", cars);
         return "show-all-cars";
@@ -95,6 +99,7 @@ public class CarService {
                 return "add-car";
             }
         }
+        car.setDeleted(false);
         saveCar(car);
         return "redirect:/cars";
     }

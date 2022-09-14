@@ -52,8 +52,8 @@ public class CarController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/delete/{id}")
-    public String deleteCar(@PathVariable("id") Long carId) {
-        carService.deleteCar(carId);
+    public String deleteCar(@PathVariable("id") Car car) {
+        carService.deleteCar(car);
         return "redirect:/cars";
     }
 }

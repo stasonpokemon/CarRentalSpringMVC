@@ -72,7 +72,7 @@
                                     <#if car.employmentStatus == true>
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                <#if name != 'unknown'>onclick="window.location='/orders/create/${car.id}'"
+                                                <#if name != 'unknown'>onclick="window.location='/orders/create/${user.id}/${car.id}'"
                                                 <#else>data-bs-toggle="modal" data-bs-target="#orderModal${car.id}"</#if>>
                                             Order
                                         </button>
@@ -94,7 +94,7 @@
                                                                 data-bs-dismiss="modal">Close
                                                         </button>
                                                         <button type="button" class="btn btn-primary"
-                                                                onclick="window.location='/orders/create/${car.id}'">
+                                                                onclick="window.location='/orders/create/${user.id}/${car.id}'">
                                                             Sign in
                                                         </button>
                                                     </div>

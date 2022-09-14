@@ -2,7 +2,7 @@
 <#import "parts/common.ftlh" as c>
 
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
         <form method="post" action="/user/${user.id}/passport/add">
 
             <div class="col-md-4">
