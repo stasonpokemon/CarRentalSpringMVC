@@ -79,7 +79,7 @@ public class OrderService {
     public String returnProcessing(Model model) {
         List<Order> orders = orderRepo.findOrderByRefundAndOrderStatus(null, OrderStatus.CONFIRMED);
         model.addAttribute("orders", orders);
-        return "return-processing";
+        return "show-return-processing";
     }
 
     public String addRefundWithOrWithoutDamage(String typeOfRequest, Order order, String damageDescription, String repairCost) {
@@ -99,6 +99,6 @@ public class OrderService {
             order.getCar().setEmploymentStatus(true);
         }
         orderRepo.save(order);
-        return "redirect:/orders/return-processing";
+        return "redirect:/orders/show-return-processing";
     }
 }

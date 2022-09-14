@@ -1,7 +1,7 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
-    <div class="container">
+    <div class="container mt-3">
         <h2>Rental statement:</h2>
 
         <#if orders?size = 0>

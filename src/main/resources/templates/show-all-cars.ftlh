@@ -66,30 +66,89 @@
                         <div class="card-body">
                             <h5 class="card-title">${car.producer} ${car.model}</h5>
                             <p class="card-text"><#if car.employmentStatus == true>Free<#else>Busy</#if></p>
-                            <p class="card-text"><small class="text-muted">Price per day: ${car.pricePerDay}$</small>
                             </p>
-                            <div class="hstack gap-3">
-                                <#if car.employmentStatus == true>
-                                    <button type="button" class="btn btn-primary mb-2"
-                                            onclick="window.location='/orders/create/${currentUserId}/${car.id}'">Order
-                                    </button>
-                                </#if>
-                                <#if isAdmin>
-                                    <button type="button" class="btn btn-primary mb-2"
-                                            onclick="window.location='/cars/${car.id}'">Edit
-                                    </button>
-                                    <form method="post" action="/cars/delete/${car.id}">
-                                        <input type="hidden" name="_csrf" value="${_csrf.token}">
-                                        <button type="submit" class="btn btn-primary mb-2">Delete</button>
-                                    </form>
-                                </#if>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <#if car.employmentStatus == true>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                <#if name != 'unknown'>onclick="window.location='/orders/create/${car.id}'"
+                                                <#else>data-bs-toggle="modal" data-bs-target="#orderModal${car.id}"</#if>>
+                                            Order
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="orderModal${car.id}" tabindex="-1"
+                                             aria-labelledby="orderModalLabel${car.id}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="orderModalLabel${car.id}">Order</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        You must be logged in to order
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary"
+                                                                onclick="window.location='/orders/create/${car.id}'">
+                                                            Sign in
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </#if>
+
+                                    <#if isAdmin>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="window.location='/cars/${car.id}'">Edit
+                                        </button>
+
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal${car.id}">
+                                            Delete
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="deleteModal${car.id}" tabindex="-1"
+                                             aria-labelledby="deleteModalLabel${car.id}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel${car.id}">Delete</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">Are you sure you want to delete the
+                                                        car ${car.producer} ${car.model}?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <form method="post" action="/cars/delete/${car.id}">
+                                                            <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </#if>
+                                </div>
+                                <small class="text-muted">Price per day: ${car.pricePerDay}$</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </#list>
         </div>
-
 
     </div>
 </@c.page>

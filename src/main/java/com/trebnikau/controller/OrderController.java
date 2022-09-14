@@ -5,6 +5,7 @@ import com.trebnikau.service.OrderService;
 import com.trebnikau.service.RefundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,8 +29,8 @@ public class OrderController {
         return orderService.showAllOrders(model);
     }
 
-    @GetMapping("/create/{user}/{car}")
-    public String createOrder(@PathVariable("user") User user,
+    @GetMapping("/create/{car}")
+    public String createOrder(@AuthenticationPrincipal User user,
                               @PathVariable("car") Car car,
                               Model model) {
         return orderService.createOrder(user, car, model);

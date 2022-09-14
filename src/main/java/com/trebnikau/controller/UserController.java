@@ -106,7 +106,7 @@ public class UserController {
     public String editPassport(@PathVariable("user") User user,
                                Model model) {
         model.addAttribute("passport", user.getPassport());
-        return "edit-passport";
+        return "edit-user-passport";
     }
 
 

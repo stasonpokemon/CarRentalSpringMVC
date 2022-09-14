@@ -63,7 +63,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="addressId" class="form-label">Birthday</label>
+                <label for="addressId" class="form-label">Address</label>
                 <input type="text"
                        class="form-control <#if passport??>${(addressError??)?string('is-invalid','is-valid')}</#if>"
                        id="addressId"
