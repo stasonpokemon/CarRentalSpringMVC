@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
         if (user.getRoles().size() == 0) {
             user.getRoles().add(Role.USER);
         }
-       save(user);
+        save(user);
     }
 
     public void addUserRoles(User user, Map<String, String> form) {
@@ -232,5 +232,14 @@ public class UserService implements UserDetailsService {
                 }
             }
         }
+    }
+
+    public String blockOrUnlockUser(User user, String typeOfRequest) {
+        if ("block".equals(typeOfRequest)) {
+            user.setActive(false);
+        } else if ("unlock".equals(typeOfRequest)){
+            user.setActive(true);
+        }
+        return "redirect:/user";
     }
 }

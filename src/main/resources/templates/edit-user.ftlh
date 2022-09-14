@@ -39,18 +39,6 @@
                 </#list>
             </div>
 
-            <#--            <div class="list-group mx-0 w-auto">-->
-            <#--                <#list roles as role>-->
-            <#--                    <label class="list-group-item d-flex gap-2">-->
-            <#--                        <input class="form-check-input flex-shrink-0 " type="checkbox"-->
-            <#--                               name="${role}" <#if rolesError??> <#else>${user.roles?seq_contains(role)?string("checked","")}</#if>>-->
-            <#--                        <span>-->
-            <#--                       ${role}-->
-            <#--                    </span>-->
-            <#--                    </label>-->
-            <#--                </#list>-->
-            <#--            </div>-->
-
             <input type="hidden" value="${user.id}" name="id">
             <input type="hidden" name="_csrf" value="${_csrf.token}">
 

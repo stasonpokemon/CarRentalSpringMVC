@@ -49,6 +49,13 @@ public class UserController {
         return userService.saveUserAfterChangingItByAdmin(user, username, form, model);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/{user}/{type}")
+    public String blockOrUnlockUser(@PathVariable("user") User user,
+                                    @PathVariable("type") String typeOfRequest){
+        return userService.blockOrUnlockUser(user, typeOfRequest);
+    }
+
     @GetMapping("/{user}/profile")
     public String showUserProfile(@PathVariable("user") User user,
                                   Model model) {
@@ -125,4 +132,6 @@ public class UserController {
         model.addAttribute("orders", orderService.findOrderByUser(user));
         return "show-users-orders";
     }
+
+
 }

@@ -32,7 +32,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu">
                             <#if isAdmin>
-                                <li><a class="dropdown-item" href="/orders">User orders</a></li>
+                                <li><a class="dropdown-item" href="/orders">Orders of all users</a></li>
                                 <li>
                                     <a class="dropdown-item" href="/orders/rental-statements">Rental
                                         statement
