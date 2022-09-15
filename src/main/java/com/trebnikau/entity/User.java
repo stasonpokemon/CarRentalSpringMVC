@@ -35,6 +35,8 @@ public class User implements UserDetails {
     @NotBlank(message = "Please fill the email")
     @Email(message = "Please fill the correct email")
     private String email;
+    @Column(name = "activation_code")
+    private String activationCode;
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

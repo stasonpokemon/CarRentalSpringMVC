@@ -29,8 +29,8 @@ public class OrderController {
         return orderService.showAllOrders(model);
     }
 
-    @GetMapping("/create/{user}/{car}")
-    public String createOrder(@PathVariable("user") User user,
+    @GetMapping("/create/{car}")
+    public String createOrder(@AuthenticationPrincipal User user,
                               @PathVariable("car") Car car,
                               Model model) {
         return orderService.createOrder(user, car, model);

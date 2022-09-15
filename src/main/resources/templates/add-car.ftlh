@@ -99,13 +99,14 @@
                           name="damageStatus"
                           id="DamageStatusId" rows="3"
                           placeholder="Damage status"
-                          aria-describedby="validationDamageStatusFeedback"><#if car??>${car.damageStatus}</#if>
-                </textarea>
+                          aria-describedby="validationDamageStatusFeedback"><#if car??>${car.damageStatus}</#if></textarea>
+                <#if damageStatusError??>
+                    <div id="validationDamageStatusFeedback" class="invalid-feedback">
+                        ${damageStatusError}
+                    </div>
+                </#if>
             </div>
-            <#if damageStatusError??>
-                <div id="validationDamageStatusFeedback" class="invalid-feedback">${damageStatusError}
-                </div>
-            </#if>
+
 
             <input type="hidden" value="-1" name="carId">
             <input type="hidden" name="_csrf" value="${_csrf.token}">

@@ -8,7 +8,7 @@
         }
     </style>
 
-    <div class="container mt-3">
+    <div class="container mt-3 mb-3">
         <h2>Car list</h2>
 
         <br>
@@ -72,7 +72,7 @@
                                     <#if car.employmentStatus == true>
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                <#if name != 'unknown'>onclick="window.location='/orders/create/${currentUser.id}/${car.id}'"
+                                                <#if name != 'unknown'>onclick="window.location='/orders/create/${car.id}'"
                                                 <#else>data-bs-toggle="modal" data-bs-target="#orderModal${car.id}"</#if>>
                                             Order
                                         </button>
@@ -94,7 +94,7 @@
                                                                 data-bs-dismiss="modal">Close
                                                         </button>
                                                         <button type="button" class="btn btn-primary"
-                                                                onclick="window.location='/orders/create/${currentUser.id}/${car.id}'">
+                                                                onclick="window.location='/orders/create/${car.id}'">
                                                             Sign in
                                                         </button>
                                                     </div>

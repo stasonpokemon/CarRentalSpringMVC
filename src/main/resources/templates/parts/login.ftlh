@@ -4,6 +4,7 @@
         <div class="text-center">
             <div class="row justify-content-md-center">
                 <div class="col-md-auto">
+
                     <form action="${path}" method="post">
 
                         <h1 class="h3 mb-3 fw-normal"><#if !isRegisterForm>Please sign in<#else>Registration</#if></h1>
@@ -11,9 +12,9 @@
 
                         <div class="form-floating mb-3">
                             <input type="text"
-                                   class="form-control <#if currentUser??>${(usernameError??)?string('is-invalid','is-valid')}</#if>"
+                                   class="form-control <#if user??>${(usernameError??)?string('is-invalid','is-valid')}</#if>"
                                    id="usernameId" name="username" placeholder="User name"
-                                   value="<#if currentUser??>${currentUser.username}</#if>"
+                                   value="<#if user??>${user.username}</#if>"
                                    aria-describedby="validationUsernameFeedback">
                             <label class="floatingInput">User name</label>
                             <#if usernameError??>
@@ -56,10 +57,10 @@
 
                             <div class="form-floating mb-3">
                                 <input type="email"
-                                       class="form-control <#if currentUser??>${(emailError??)?string('is-invalid','is-valid')}</#if>"
+                                       class="form-control <#if user??>${(emailError??)?string('is-invalid','is-valid')}</#if>"
                                        id="emailId"
                                        name="email" placeholder="Email" aria-describedby="validationEmailFeedback"
-                                       value="<#if currentUser??>${currentUser.email}</#if>">
+                                       value="<#if user??>${user.email}</#if>">
                                 <label class="form-label">Email</label>
                                 <#if emailError??>
                                     <div id="validationEmailFeedback" class="invalid-feedback">

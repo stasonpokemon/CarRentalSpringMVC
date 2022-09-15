@@ -14,10 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -27,6 +24,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private MailSenderService mailSenderService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -78,9 +78,22 @@ public class UserService implements UserDetailsService {
         } else if (userByEmail != null) {
             return 0;
         } else {
-            user.setActive(true);
+            user.setActive(false);
+            // Добавляем пользователю рандомный код активации
+            user.setActivationCode(UUID.randomUUID().toString());
             user.setRoles(Collections.singleton(Role.USER));
             save(user);
+
+            // Отпраляем код активации на почту пользователя
+            if (!StringUtils.isEmpty(user.getEmail())) {
+                String message = String.format("Hello, %s! \n" +
+                                "Welcome to car rental website. Please, visit next link for activate your profile: http://localhost:8081/registration/activate/%s!",
+                        user.getUsername(),
+                        user.getActivationCode()
+                );
+                mailSenderService.send(user.getEmail(), "Activation code", message);
+            }
+
             return 1;
         }
 
@@ -187,7 +200,7 @@ public class UserService implements UserDetailsService {
     public String showUserPassport(User user, Model model) {
         if (user.getPassport() != null) {
             model.addAttribute("passportIsAvailable", true);
-            model.addAttribute("passport",  user.getPassport());
+            model.addAttribute("passport", user.getPassport());
             model.addAttribute("user", user);
         } else {
             model.addAttribute("passportIsAvailable", false);
@@ -237,9 +250,22 @@ public class UserService implements UserDetailsService {
     public String blockOrUnlockUser(User user, String typeOfRequest) {
         if ("block".equals(typeOfRequest)) {
             user.setActive(false);
-        } else if ("unlock".equals(typeOfRequest)){
+        } else if ("unlock".equals(typeOfRequest)) {
             user.setActive(true);
         }
         return "redirect:/user";
+    }
+
+    public String activateUser(String activationCode, Model model) {
+        User userByActivationCode = userRepo.findUserByActivationCode(activationCode);
+        if (userByActivationCode == null) {
+            model.addAttribute("message", "Activation code is note found");
+        } else {
+            userByActivationCode.setActivationCode(null);
+            userByActivationCode.setActive(true);
+            userRepo.save(userByActivationCode);
+            model.addAttribute("message", "User successfully activated");
+        }
+        return "/login";
     }
 }
