@@ -94,7 +94,7 @@ public class UserService implements UserDetailsService {
                 );
 //                mailSenderService.send(user.getEmail(), "Activation code", message);
                 // ОТправляем сообщение отдельным потоком, чтобы User не ждал загрузку
-                new MailSenderThread(mailSenderService, user.getEmail(), "Activation code", message);
+                new MailSenderThread(mailSenderService, user.getEmail(), "Activation code", message).start();
             }
 
             return 1;
@@ -267,7 +267,7 @@ public class UserService implements UserDetailsService {
         // Отправаляем пользователю сообщение о статусе аккаунта на его почту
 //        mailSenderService.send(user.getEmail(), subject, message);
         // ОТправляем сообщение отдельным потоком, чтобы User не ждал загрузку
-        new MailSenderThread(mailSenderService, user.getEmail(), subject, message);
+        new MailSenderThread(mailSenderService, user.getEmail(), subject, message).start();
 
         return "redirect:/user";
     }
