@@ -1,4 +1,6 @@
+<#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
+
 <@c.page>
     <div class="container mt-3">
         <h2>User list</h2>
@@ -21,6 +23,8 @@
                 <th scope="col">Username</th>
                 <th scope="col">Roles</th>
                 <th scope="col">Edit</th>
+                <th scope="col">Profile</th>
+                <th scope="col">Activity</th>
             </tr>
             </thead>
             <tbody>
@@ -29,6 +33,23 @@
                     <td>${user.username}</td>
                     <td><#list user.roles as role> ${role} <#sep>, </#list></td>
                     <td><a href="/user/${user.id}">Edit</a></td>
+                    <td><a href="/user/${user.id}/profile">Profile</a></td>
+                    <td>
+
+                        <#if user.active == true>
+                            <form method="post" action="/user/${user.id}/block">
+                                <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                <button type="submit" class="btn btn-danger"
+                                        <#if user.id == currentUserId>disabled </#if>>Block
+                                </button>
+                            </form>
+                        <#else>
+                            <form method="post" action="/user/${user.id}/unlock">
+                                <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                <button type="submit" class="btn btn-success">Unlock</button>
+                            </form>
+                        </#if>
+                    </td>
                 </tr>
             </#list>
             </tbody>

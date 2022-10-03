@@ -2,6 +2,7 @@ package com.trebnikau.service;
 
 import com.trebnikau.entity.*;
 import com.trebnikau.repo.OrderRepo;
+import com.trebnikau.threads.MailSenderThread;
 import com.trebnikau.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import java.util.Map;
 
 @Service
 public class OrderService {
+
+    @Autowired
+    private MailSenderService mailSenderService;
 
     @Autowired
     private OrderRepo orderRepo;
@@ -66,12 +70,30 @@ public class OrderService {
     }
 
     public String acceptOrCancelOrder(String typeOfRequest, Order order) {
+        User user = order.getUser();
+        Car car = order.getCar();
+        String message = null;
+        String subject = null;
         if ("accept".equals(typeOfRequest)) {
             order.setOrderStatus(OrderStatus.CONFIRMED);
+            subject = "Order accepted";
+            message = String.format("Hello, %s!\n" +
+                            "Your order is accepted. You can get a car(%s %s) in the showroom.",
+                    user.getUsername(), car.getProducer(), car.getModel());
         } else if ("cancel".equals(typeOfRequest)) {
             order.setOrderStatus(OrderStatus.REFUSAL);
             order.getCar().setEmploymentStatus(true);
+            subject = "Order cancelled";
+            message = String.format("Hello, %s!\n" +
+                            "Sadly, but your order has been cancelled.",
+                    user.getUsername(), car.getProducer(), car.getModel());
         }
+        // Отпраляем письмо о статусе заказа пользователю на почту
+//        mailSenderService.send(user.getEmail(), subject, message);
+        // ОТправляем сообщение отдельным потоком, чтобы User не ждал загрузку
+        new MailSenderThread(mailSenderService, user.getEmail(), subject, message).start();
+
+
         orderRepo.save(order);
         return "redirect:/orders/rental-statements";
     }
@@ -87,18 +109,18 @@ public class OrderService {
         refund.setOrder(order);
         refund.setRefundDate(new Timestamp(new Date().getTime()));
         order.setRefund(refund);
-        if ("with".equals(typeOfRequest)){
+        if ("with".equals(typeOfRequest)) {
             refund.setDamageStatus(false);
             refund.setDamageDescription(damageDescription);
             refund.setPrice(Double.parseDouble(repairCost));
             order.getCar().setDamageStatus(damageDescription);
-        } else if("without".equals(typeOfRequest)){
+        } else if ("without".equals(typeOfRequest)) {
             refund.setDamageStatus(true);
             refund.setDamageDescription("-");
             refund.setPrice(0);
             order.getCar().setEmploymentStatus(true);
         }
         orderRepo.save(order);
-        return "redirect:/orders/show-return-processing";
+        return "redirect:/orders/return-processing";
     }
 }

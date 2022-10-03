@@ -4,6 +4,7 @@ import com.trebnikau.entity.ClientPassport;
 import com.trebnikau.entity.Role;
 import com.trebnikau.entity.User;
 import com.trebnikau.repo.UserRepo;
+import com.trebnikau.threads.MailSenderThread;
 import com.trebnikau.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -91,7 +92,9 @@ public class UserService implements UserDetailsService {
                         user.getUsername(),
                         user.getActivationCode()
                 );
-                mailSenderService.send(user.getEmail(), "Activation code", message);
+//                mailSenderService.send(user.getEmail(), "Activation code", message);
+                // ОТправляем сообщение отдельным потоком, чтобы User не ждал загрузку
+                new MailSenderThread(mailSenderService, user.getEmail(), "Activation code", message);
             }
 
             return 1;
@@ -248,11 +251,24 @@ public class UserService implements UserDetailsService {
     }
 
     public String blockOrUnlockUser(User user, String typeOfRequest) {
+        String message = null;
+        String subject = null;
         if ("block".equals(typeOfRequest)) {
             user.setActive(false);
+            subject = "Your account has been blocked";
+            message = String.format("Hello, %s! \n" +
+                    "your account has been blocked by the administrator", user.getUsername());
         } else if ("unlock".equals(typeOfRequest)) {
             user.setActive(true);
+            subject = "Your account has been unlocked";
+            message = String.format("Hello, %s! \n" +
+                    "your account has been unlocked by an administrator", user.getUsername());
         }
+        // Отправаляем пользователю сообщение о статусе аккаунта на его почту
+//        mailSenderService.send(user.getEmail(), subject, message);
+        // ОТправляем сообщение отдельным потоком, чтобы User не ждал загрузку
+        new MailSenderThread(mailSenderService, user.getEmail(), subject, message);
+
         return "redirect:/user";
     }
 

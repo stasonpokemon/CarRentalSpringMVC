@@ -6,6 +6,12 @@
         .search-container {
             padding: 0;
         }
+
+        .card-shadow {
+            background: #63e3de; /* Цвет фона */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+            padding: 10px;
+        }
     </style>
 
     <div class="container mt-3 mb-3">
@@ -61,7 +67,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <#list cars as car>
                 <div class="col">
-                    <div class="card my-car">
+                    <div class="card my-car card-shadow">
                         <img width="200" height="235" src="${car.imageLink}" class="card-img-top" alt="Card image cap">
                         <div class="card-body">
                             <h5 class="card-title">${car.producer} ${car.model}</h5>
