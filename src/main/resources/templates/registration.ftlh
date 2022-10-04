@@ -2,5 +2,13 @@
 <#import "parts/login.ftlh" as l>
 
 <@c.page>
-    <@l.login "/registration" true/>
+    <div class="container mt-3">
+        <div class="text-center">
+            <div class="row justify-content-md-center">
+                <div class="col-md-auto">
+                    <@l.login "/registration" true/>
+                </div>
+            </div>
+        </div>
+    </div>
 </@c.page>

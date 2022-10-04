@@ -1,9 +1,6 @@
 <#include "security.ftlh">
 <#macro login path isRegisterForm>
-    <div class="container mt-3">
-        <div class="text-center">
-            <div class="row justify-content-md-center">
-                <div class="col-md-auto">
+
 
                     <form action="${path}" method="post">
 
@@ -85,10 +82,6 @@
                             <a href="/registration">Registration</a>
                         </#if>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </#macro>
 
 <#macro loigout>

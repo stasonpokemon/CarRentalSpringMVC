@@ -20,7 +20,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.authorizeRequests()
                     .antMatchers("/","/registration","/registration/activate/*","/home","/cars","/static/**","/activate/*.").permitAll()
                     .anyRequest().authenticated()
@@ -35,8 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll();
 
     }
-    // Настройка конфигурации для работы security с базой данных
 
+    // Настройка конфигурации для работы security с базой данных
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)

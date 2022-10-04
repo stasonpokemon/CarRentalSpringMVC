@@ -31,7 +31,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findUserByUsername(username);
+
+        User userByUsername = userRepo.findUserByUsername(username);
+        if(userByUsername == null){
+            return new User();
+        }
+
+        return userByUsername;
     }
 
 
@@ -275,11 +281,13 @@ public class UserService implements UserDetailsService {
     public String activateUser(String activationCode, Model model) {
         User userByActivationCode = userRepo.findUserByActivationCode(activationCode);
         if (userByActivationCode == null) {
+            model.addAttribute("messageType", "danger");
             model.addAttribute("message", "Activation code is note found");
         } else {
             userByActivationCode.setActivationCode(null);
             userByActivationCode.setActive(true);
             userRepo.save(userByActivationCode);
+            model.addAttribute("messageType", "success");
             model.addAttribute("message", "User successfully activated");
         }
         return "/login";
