@@ -3,6 +3,10 @@
 <@c.page>
     <div class="container mt-3">
         <h2>All orders:</h2>
+        <div>
+            <a href="/orders/pdf" class="btn btn-success">Export data into PDF
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+        </div><br/>
 
         <#if orders?size = 0>
             There is no  orders
@@ -25,7 +29,7 @@
                         <td>${order.car.producer} ${order.car.model}</td>
                         <td>${order.user.username}</td>
                         <td>${order.price}</td>
-                        <td>${order.orderStatus}</td>
+                        <td>${order.orderStatus.getAbbreviation()}</td>
                         <td>${order.orderDate}</td>
                         <td>${order.rentalPeriod}</td>
                     </tr>

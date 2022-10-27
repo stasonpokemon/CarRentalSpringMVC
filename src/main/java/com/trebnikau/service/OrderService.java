@@ -23,6 +23,10 @@ public class OrderService {
     @Autowired
     private OrderRepo orderRepo;
 
+    public Iterable<Order> findAll(){
+        return orderRepo.findAll();
+    }
+
     public List<Order> findOrderByUser(User user) {
         return orderRepo.findOrderByUser(user);
     }

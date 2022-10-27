@@ -1,6 +1,7 @@
 <#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
 <@c.page>
+
     <div class="container mt-3">
         <h2>Passport</h2>
         <#if passportIsAvailable == true>

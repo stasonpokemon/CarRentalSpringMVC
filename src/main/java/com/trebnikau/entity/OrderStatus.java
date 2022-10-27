@@ -7,7 +7,11 @@ public enum OrderStatus {
 
     String abbreviation;
 
-    OrderStatus(String abbreviation) {
+    private OrderStatus(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public String getAbbreviation(){
+        return this.abbreviation;
     }
 }

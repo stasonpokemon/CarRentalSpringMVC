@@ -7,6 +7,7 @@ import com.trebnikau.repo.UserRepo;
 import com.trebnikau.threads.MailSenderThread;
 import com.trebnikau.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +29,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private MailSenderService mailSenderService;
+
+    @Value("${server.port}")
+    private String SERVER_PORT;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -94,8 +98,9 @@ public class UserService implements UserDetailsService {
             // Отпраляем код активации на почту пользователя
             if (!StringUtils.isEmpty(user.getEmail())) {
                 String message = String.format("Hello, %s! \n" +
-                                "Welcome to car rental website. Please, visit next link for activate your profile: http://localhost:8081/registration/activate/%s!",
+                                "Welcome to car rental website. Please, visit next link for activate your profile: http://localhost:%s/registration/activate/%s!",
                         user.getUsername(),
+                        SERVER_PORT,
                         user.getActivationCode()
                 );
 //                mailSenderService.send(user.getEmail(), "Activation code", message);

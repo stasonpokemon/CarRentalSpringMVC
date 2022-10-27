@@ -3,6 +3,7 @@ package com.trebnikau.controller;
 import com.trebnikau.entity.*;
 import com.trebnikau.service.OrderService;
 import com.trebnikau.service.RefundService;
+import com.trebnikau.utils.OrdersDataPdfExport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
@@ -80,4 +82,17 @@ public class OrderController {
         return  refundService.showAllRefunds(model);
     }
 
+    /***
+     * Export data to pdf file
+     */
+    @GetMapping("/pdf")
+    public ModelAndView exportToPdf() {
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new OrdersDataPdfExport());
+        //read data from DB
+        Iterable<Order> list= orderService.findAll();
+        //send to pdfImpl class
+        mav.addObject("list", list);
+        return mav;
+    }
 }

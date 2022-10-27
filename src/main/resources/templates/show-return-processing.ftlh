@@ -26,7 +26,7 @@
                             <td>${order.car.producer} ${order.car.model}</td>
                             <td>${order.user.username}</td>
                             <td>${order.price}</td>
-                            <td>${order.orderStatus}</td>
+                            <td>${order.orderStatus.getAbbreviation()}</td>
                             <td>${order.orderDate}</td>
                             <td>${order.rentalPeriod}</td>
                             <td>
