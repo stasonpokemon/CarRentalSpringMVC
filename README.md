@@ -6,7 +6,7 @@ Second step: you need to customize your application.properties file
 spring.datasource.username=
 spring.datasource.password=
   
-  #for javaMailSender
+  # for javaMailSender
 spring.mail.host=
 spring.mail.username=
 spring.mail.password=
