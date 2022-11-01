@@ -1,7 +1,5 @@
-DROP
-DATABASE IF EXISTS car_rental_spring;
-CREATE
-DATABASE IF NOT EXISTS car_rental_spring;
+DROP DATABASE IF EXISTS car_rental_spring;
+CREATE DATABASE IF NOT EXISTS car_rental_spring;
 USE car_rental_spring;
 
 INSERT INTO users(id, username, password, active, email)
@@ -17,5 +15,5 @@ VALUES (1, 'Audi', 'A7', '2015', 290, 0x01, 'Without damage', 'https://avatars.m
        (5, 'Bentley', 'Continental gt', '2021', 700, 0x01, 'Without damage', 'https://avatars.mds.yandex.net/i?id=0c7086819b8e7e59b4655fa56210d526-5140197-images-thumbs&n=13', 0x00),
        (6, 'Maclaren', '720s', '2021', 800, 0x01, 'Without damage', 'https://avatars.mds.yandex.net/i?id=2935e7d83106b4c9d0e7e3ef32317107-5436885-images-thumbs&n=13', 0x00),
        (7, 'Ferrari', '488 Pista', '2018', 500, 0x01, 'Without damage', 'https://avatars.mds.yandex.net/i?id=a1a43df466e944e61a1d5b750adf2af2-4407062-images-thumbs&n=13', 0x00);
-       (7, 'Nissan', 'GTR', '2017', 700, 0x01, 'Without damage', 'https://avatars.mds.yandex.net/i?id=0c11cd4e88b398ed905ce966735cfc58-4954930-images-thumbs&n=13', 0x00);
+       (8, 'Nissan', 'GTR', '2017', 700, 0x01, 'Without damage', 'https://avatars.mds.yandex.net/i?id=0c11cd4e88b398ed905ce966735cfc58-4954930-images-thumbs&n=13', 0x00);
 

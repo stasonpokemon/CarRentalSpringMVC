@@ -1,0 +1,26 @@
+
+body {
+    color: #361dcd;
+}
+
+/* Carousel */
+.search-container {
+    padding: 0;
+}
+
+.card-shadow {
+    background: rgb(99, 227, 222); /* Цвет фона */
+    padding: 10px;
+    border-radius: 1em;
+}
+
+.card-shadow img {
+    border-radius: 1em;
+}
+
+.card-shadow:hover {
+    background-color: #00fff6;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Параметры тени */
+    transition-duration: revert;
+}
+/* Carousel */

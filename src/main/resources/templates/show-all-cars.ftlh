@@ -8,9 +8,19 @@
         }
 
         .card-shadow {
-            background: #63e3de; /* Цвет фона */
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+            background: rgb(99, 227, 222); /* Цвет фона */
             padding: 10px;
+            border-radius: 1em;
+        }
+
+        .card-shadow img {
+            border-radius: 1em;
+        }
+
+        .card-shadow:hover {
+            background-color: #00fff6;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Параметры тени */
+            transition-duration: revert;
         }
     </style>
 
@@ -64,7 +74,7 @@
         </div>
 
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <#list cars as car>
                 <div class="col">
                     <div class="card my-car card-shadow">
@@ -79,7 +89,8 @@
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
                                                 <#if name != 'unknown'>onclick="window.location='/orders/create/${car.id}'"
-                                                <#else>data-bs-toggle="modal" data-bs-target="#orderModal${car.id}"</#if>>
+                                                <#else>data-bs-toggle="modal"
+                                                data-bs-target="#orderModal${car.id}"</#if>>
                                             Order
                                         </button>
                                         <!-- Modal -->
@@ -125,7 +136,8 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="deleteModalLabel${car.id}">Delete</h5>
+                                                        <h5 class="modal-title" id="deleteModalLabel${car.id}">
+                                                            Delete</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>

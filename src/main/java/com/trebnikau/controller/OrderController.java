@@ -32,10 +32,10 @@ public class OrderController {
     }
 
     @GetMapping("/create/{car}")
-    public String createOrder(@AuthenticationPrincipal User user,
+    public String createOrder(@AuthenticationPrincipal User userFromAuthentication,
                               @PathVariable("car") Car car,
                               Model model) {
-        return orderService.createOrder(user, car, model);
+        return orderService.createOrder(userFromAuthentication, car, model);
     }
 
     @PostMapping("/create/{user}/{car}")

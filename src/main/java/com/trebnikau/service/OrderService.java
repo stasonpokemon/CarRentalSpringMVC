@@ -2,6 +2,7 @@ package com.trebnikau.service;
 
 import com.trebnikau.entity.*;
 import com.trebnikau.repo.OrderRepo;
+import com.trebnikau.repo.UserRepo;
 import com.trebnikau.threads.MailSenderThread;
 import com.trebnikau.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class OrderService {
     @Autowired
     private OrderRepo orderRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     public Iterable<Order> findAll(){
         return orderRepo.findAll();
     }
@@ -31,7 +35,9 @@ public class OrderService {
         return orderRepo.findOrderByUser(user);
     }
 
-    public String createOrder(User user, Car car, Model model) {
+    public String createOrder(User userFromAuthentication, Car car, Model model) {
+        // При первом входе userFromAuthentication не будет иметь данных о паспорте даже если мы его добавим так как userFromAuthentication хранит данные полученные только при авторизаци
+        User user = userRepo.findById(userFromAuthentication.getId()).get();
         if (user.getPassport() == null) {
             model.addAttribute("passportIsAvailable", false);
             return "create-order";
