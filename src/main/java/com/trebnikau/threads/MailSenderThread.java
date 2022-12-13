@@ -1,6 +1,7 @@
 package com.trebnikau.threads;
 
 import com.trebnikau.service.MailSenderService;
+import com.trebnikau.service.impl.MailSenderServiceImpl;
 
 public class MailSenderThread extends Thread {
 
@@ -9,7 +10,7 @@ public class MailSenderThread extends Thread {
     private String subject;
     private String message;
 
-    public MailSenderThread(MailSenderService mailSenderService, String emailTo, String subject, String message) {
+    public MailSenderThread(MailSenderServiceImpl mailSenderService, String emailTo, String subject, String message) {
         this.mailSenderService = mailSenderService;
         this.emailTo = emailTo;
         this.subject = subject;

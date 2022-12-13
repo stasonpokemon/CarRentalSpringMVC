@@ -1,8 +1,8 @@
 package com.trebnikau.controller;
 
 import com.trebnikau.entity.*;
-import com.trebnikau.service.OrderService;
-import com.trebnikau.service.RefundService;
+import com.trebnikau.service.impl.OrderServiceImpl;
+import com.trebnikau.service.impl.RefundServiceImpl;
 import com.trebnikau.utils.OrdersDataPdfExport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,10 +21,10 @@ import javax.validation.Valid;
 public class OrderController {
 
     @Autowired
-    private RefundService refundService;
+    private RefundServiceImpl refundService;
 
     @Autowired
-    private OrderService orderService;
+    private OrderServiceImpl orderService;
 
     @GetMapping()
     public String showAllOrders(Model model) {

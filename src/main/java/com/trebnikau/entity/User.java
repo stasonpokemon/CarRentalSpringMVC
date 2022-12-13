@@ -21,7 +21,7 @@ import java.util.Set;
 /* Если с классом user связаны другие таблицы, то в классах описывающие таблицы надо имплементировать
  интерфейс Serializable иначе будет ошибка ConversionFailedException
  */
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,30 +53,6 @@ public class User implements UserDetails {
         return roles.contains(Role.ADMIN);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isActive();
-    }
 
 }
 

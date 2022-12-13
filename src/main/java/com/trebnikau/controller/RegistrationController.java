@@ -1,7 +1,7 @@
 package com.trebnikau.controller;
 
 import com.trebnikau.entity.User;
-import com.trebnikau.service.UserService;
+import com.trebnikau.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,7 @@ import javax.validation.Valid;
 public class RegistrationController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
 
     @GetMapping()

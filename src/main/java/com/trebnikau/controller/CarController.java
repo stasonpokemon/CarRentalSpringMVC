@@ -1,7 +1,7 @@
 package com.trebnikau.controller;
 
 import com.trebnikau.entity.Car;
-import com.trebnikau.service.CarService;
+import com.trebnikau.service.impl.CarServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class CarController {
 
 
     @Autowired
-    private CarService carService;
+    private CarServiceImpl carService;
 
     @GetMapping()
     public String showAllCars(@RequestParam(required = false, name = "filter", defaultValue = "") String filter,

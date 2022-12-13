@@ -3,8 +3,8 @@ package com.trebnikau.controller;
 import com.trebnikau.entity.ClientPassport;
 import com.trebnikau.entity.Role;
 import com.trebnikau.entity.User;
-import com.trebnikau.service.OrderService;
-import com.trebnikau.service.UserService;
+import com.trebnikau.service.impl.OrderServiceImpl;
+import com.trebnikau.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -20,10 +20,10 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private OrderService orderService;
+    private OrderServiceImpl orderService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
